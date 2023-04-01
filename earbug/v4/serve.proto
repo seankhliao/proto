@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package seankhliao.earbug.v4;
+
+import "google/protobuf/timestamp.proto";
+
+service EarbugService {
+  rpc UpdateRecentlyPlayed(UpdateRecentlyPlayedRequest) returns (UpdateRecentlyPlayedResponse);
+  rpc Authorize(AuthorizeRequest) returns (AuthorizeResponse);
+  rpc Export(ExportRequest) returns (ExportResponse);
+  rpc ReportPlayed(ReportPlayedRequest) returns (ReportPlayedResponse);
+}
+
+message UpdateRecentlyPlayedRequest {}
+message UpdateRecentlyPlayedResponse{}
+
+message AuthorizeRequest{
+  string client_id = 1;
+  string client_secret = 2;
+}
+message AuthorizeResponse {
+  string auth_url = 1;
+}
+
+message ExportRequest {
+  string bucket = 1;
+  string key = 2;
+}
+message ExportResponse {
+  bytes content = 1;
+}
+
+message ReportPlayedRequest {
+  google.protobuf.Timestamp since = 1;
+}
+message ReportPlayedResponse {
+  message Track {
+    string id = 1;
+    string name = 2;
+  }
+  message Artist {
+    string id = 1;
+    string name = 2;
+  }
+  message Playback {
+    google.protobuf.Timestamp start_time = 1;
+    Track track = 2;
+    repeated Artist artists = 3;
+  }
+
+  repeated Playback playbacks = 1;
+}
